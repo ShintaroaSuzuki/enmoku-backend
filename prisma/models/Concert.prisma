@@ -1,0 +1,96 @@
+model Concert {
+  id            String            @id @default(uuid())
+  title         String
+  place         ConcertHall?      @relation(fields: [concertHallId], references: [id])
+  date          DateTime
+  notes         ConcertNote[]
+  headers       ConcertHeader[]
+  programs      ConcertProgram[]
+  historys      ConcertHistory[]
+  greetings     ConcertGreeting[]
+  accesses      ConcertAccess[]
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  concertHallId String?
+  published     Boolean           @default(false)
+  user          User              @relation(fields: [userId], references: [id])
+  userId        String
+}
+
+model ConcertHall {
+  id      String    @id @default(uuid())
+  name    String
+  lon     Float
+  lat     Float
+  Concert Concert[]
+}
+
+model ConcertHeader {
+  id        String           @id @default(uuid())
+  key       ConcertHeaderKey
+  title     String
+  Concert   Concert?         @relation(fields: [concertId], references: [id])
+  concertId String?
+}
+
+enum ConcertHeaderKey {
+  program
+  history
+  greeting
+}
+
+model ConcertNote {
+  id        String   @id @default(uuid())
+  body      String
+  Concert   Concert? @relation(fields: [concertId], references: [id])
+  concertId String?
+}
+
+model ConcertProgram {
+  id          String             @id @default(uuid())
+  title       String
+  description String?
+  type        ConcertProgramType
+  Concert     Concert?           @relation(fields: [concertId], references: [id])
+  concertId   String?
+}
+
+enum ConcertProgramType {
+  piece
+  message
+  pause
+}
+
+model ConcertHistory {
+  id        String                @id @default(uuid())
+  label     String?
+  events    ConcertHistoryEvent[]
+  Concert   Concert?              @relation(fields: [concertId], references: [id])
+  concertId String?
+}
+
+model ConcertHistoryEvent {
+  id               String          @id @default(uuid())
+  body             String
+  ConcertHistory   ConcertHistory? @relation(fields: [concertHistoryId], references: [id])
+  concertHistoryId String?
+}
+
+model ConcertGreeting {
+  id        String   @id @default(uuid())
+  author    String?
+  body      String
+  Concert   Concert? @relation(fields: [concertId], references: [id])
+  concertId String?
+}
+
+model ConcertAccess {
+  id        String   @id @default(uuid())
+  ip        String
+  ts        DateTime @default(now())
+  action    String
+  category  String
+  label     String?
+  Concert   Concert? @relation(fields: [concertId], references: [id])
+  concertId String?
+}

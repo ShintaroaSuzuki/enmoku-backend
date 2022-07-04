@@ -1,0 +1,156 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Concert {
+  User: User!
+  _count: ConcertCount!
+  accesses: [ConcertAccess!]
+  concertHallId: String
+  createdAt: DateTime!
+  date: DateTime!
+  greetings: [ConcertGreeting!]
+  headers: [ConcertHeader!]
+  historys: [ConcertHistory!]
+  id: ID!
+  notes: [ConcertNote!]
+  place: ConcertHall
+  programs: [ConcertProgram!]
+  published: Boolean!
+  title: String!
+  updatedAt: DateTime!
+  userId: String!
+}
+
+type ConcertAccess {
+  Concert: Concert
+  action: String!
+  category: String!
+  concertId: String
+  id: ID!
+  ip: String!
+  label: String
+  ts: DateTime!
+}
+
+type ConcertCount {
+  access: Int!
+  greeting: Int!
+  header: Int!
+  history: Int!
+  note: Int!
+  program: Int!
+}
+
+type ConcertGreeting {
+  Concert: Concert
+  author: String
+  body: String!
+  concertId: String
+  id: ID!
+}
+
+type ConcertHall {
+  Concert: [Concert!]
+  _count: ConcertHallCount!
+  id: ID!
+  lat: Float!
+  lon: Float!
+  name: String!
+}
+
+type ConcertHallCount {
+  Concert: Int!
+}
+
+type ConcertHeader {
+  Concert: Concert
+  concertId: String
+  id: ID!
+  key: ConcertHeaderKey!
+  title: String!
+}
+
+enum ConcertHeaderKey {
+  greeting
+  history
+  program
+}
+
+type ConcertHistory {
+  Concert: Concert
+  _count: ConcertHistoryCount!
+  concertId: String
+  events: [ConcertHistoryEvent!]
+  id: ID!
+  label: String
+}
+
+type ConcertHistoryCount {
+  events: Int!
+}
+
+type ConcertHistoryEvent {
+  ConcertHistory: ConcertHistory
+  body: String!
+  concertHistoryId: String
+  id: ID!
+}
+
+type ConcertNote {
+  Concert: Concert
+  body: String!
+  concertId: String
+  id: ID!
+}
+
+type ConcertProgram {
+  Concert: Concert
+  concertId: String
+  description: String
+  id: ID!
+  title: String!
+  type: ConcertProgramType!
+}
+
+enum ConcertProgramType {
+  message
+  pause
+  piece
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Mutation {
+  createConcert(date: DateTime!, title: String!, userId: String!): Concert!
+  createConcertNote(body: String!, concertId: ID!): ConcertNote!
+  createUser(avatar: String!, id: ID!, name: String!): User!
+  deleteUser(id: ID!): User!
+  updateUser(description: String!, id: ID!, name: String!): User!
+}
+
+type Query {
+  concert(id: ID!): Concert!
+  concertNotes: [ConcertNote!]!
+  concerts: [Concert!]!
+  uniqueUser(id: ID!): User!
+  users: [User]!
+}
+
+type User {
+  _count: UserCount!
+  avatar: String!
+  concerts: [Concert!]
+  createdAt: DateTime!
+  description: String
+  id: ID!
+  name: String!
+  updatedAt: DateTime!
+}
+
+type UserCount {
+  concerts: Int!
+}
