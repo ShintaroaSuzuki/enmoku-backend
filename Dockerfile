@@ -9,7 +9,6 @@ COPY . .
 RUN yarn build
 
 FROM node:16 AS runner
-ENV DATABASE_URL="<DATABASE_URL>"
 WORKDIR /app
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/yarn.lock ./
