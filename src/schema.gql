@@ -3,7 +3,6 @@
 # ------------------------------------------------------
 
 type Concert {
-  User: User!
   _count: ConcertCount!
   accesses: [ConcertAccess!]
   concertHallId: String
@@ -19,6 +18,7 @@ type Concert {
   published: Boolean!
   title: String!
   updatedAt: DateTime!
+  user: User!
   userId: String!
 }
 
@@ -136,7 +136,7 @@ type Query {
   concert(id: ID!): Concert!
   concertNotes: [ConcertNote!]!
   concerts: [Concert!]!
-  uniqueUser(id: ID!): User!
+  user(id: ID!): User!
   users: [User]!
 }
 

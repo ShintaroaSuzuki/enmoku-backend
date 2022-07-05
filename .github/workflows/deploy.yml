@@ -1,0 +1,48 @@
+name: Deploy
+
+on: 
+  push:
+    branches:
+      - main
+
+env:
+  SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  GCP_REGION: ${{ secrets.GCP_REGION }}
+  IMAGE: gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.SERVICE_NAME }}
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+jobs:
+  deploy-to-cloud-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - name: auth
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
+
+      - name: Configure docker to use the gcloud cli
+        run: gcloud auth configure-docker --quiet
+
+      - name: Build a docker image
+        run: docker build -t $IMAGE .
+
+      - name: Push the docker image to Container Registry
+        run: docker push $IMAGE
+
+      - name: Deploy to Cloud Run
+        run: |
+            gcloud run deploy $SERVICE_NAME \
+              --image $IMAGE \
+              --project $GCP_PROJECT_ID \
+              --region $GCP_REGION \
+              --platform=managed \
+              --allow-unauthenticated \
+              --set-env-vars="DATABASE_URL=$DATABASE_URL" \
+              --quiet
